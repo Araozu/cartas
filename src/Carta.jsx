@@ -11,17 +11,14 @@ const estilos = StyleSheet.create({
         fontFamily: "monospace",
         display: "inline-block",
         color: "#151515",
-        border: "solid 2px #151515",
-        borderRadius: "3px",
-        boxShadow: "2px 2px 5px 0 #151515",
+        border: "solid 0.2rem #151515",
+        borderRadius: "0.1rem",
+        boxShadow: "0.1rem 0.1rem 0.3rem 0 #151515",
         width: "2.5rem",
         padding: "0.25rem",
         textAlign: "center",
         cursor: "pointer",
-        transition: "transform 150ms",
-        ":hover": {
-            transform: "translateY(-1rem)"
-        }
+        transition: "transform 150ms"
     },
     carta: {
         display: "inline-block",
@@ -51,6 +48,7 @@ const estilos = StyleSheet.create({
 export function Carta(props) {
 
     const valor = props.valor;
+    const movimiento = props.movimiento;
 
     const tipo = (valor << 23) >>> 28;
     const tipoCarta = (() => {
@@ -88,13 +86,23 @@ export function Carta(props) {
         }
     })();
 
+    const transformacion = StyleSheet.create({
+        tra: {
+            transform: movimiento,
+            ":hover": {
+                color: "red",
+                transform: (movimiento === "none"? `translateY(-1rem)`: `translateY(-1rem) ${movimiento}`)
+            }
+        }
+    });
+
     const clasesCartaInner = css(
         estilos.carta,
         estilos[tipoCarta]
     );
 
     return (
-        <span className={css(estilos.contCarta)}>
+        <span className={css(estilos.contCarta, transformacion.tra)}>
             <span className={clasesCartaInner}
                 dangerouslySetInnerHTML={{__html: valorC}}>
             </span>

@@ -47,13 +47,14 @@ function App() {
 
     const cartasMano = cartasRandom.splice(0, 10);
     const cartasSerializadas = cartasRandom.join(",");
-    const shaObj = new JSSHA("SHA-512", "TEXT", { encoding: "UTF8" });
+    const shaObj = new JSSHA("SHA-512", "TEXT", {encoding: "UTF8"});
     shaObj.update(cartasSerializadas);
     const sha512 = shaObj.getHash("HEX");
 
     return (
         <div className={css(estilos.contJuego)}>
             <table border={1}>
+                <tbody>
                 <tr>
                     <td>Baraja aleatoria:</td>
                     <td style={{wordBreak: "break-all"}}>
@@ -64,6 +65,7 @@ function App() {
                     <td>SHA-512:</td>
                     <td>{sha512}</td>
                 </tr>
+                </tbody>
             </table>
             <Mano cartas={cartasMano}/>
         </div>
