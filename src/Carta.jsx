@@ -90,7 +90,6 @@ export function Carta(props) {
         tra: {
             transform: movimiento,
             ":hover": {
-                color: "red",
                 transform: (movimiento === "none"? `translateY(-1rem)`: `translateY(-1rem) ${movimiento}`)
             }
         }

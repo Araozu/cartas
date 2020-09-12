@@ -23,9 +23,9 @@ const moverCarta = (posOriginal, posDestino, numCartas) => {
     }
 };
 
-const swap = (posOriginalElem1, posPreviaElem1, posOriginalElem2, posPreviaElem2, numCartas) => {
-    const operacion1 = moverCarta(posOriginalElem1, posPreviaElem2, numCartas);
-    const operacion2 = moverCarta(posOriginalElem2, posPreviaElem1, numCartas);
+const swap = (posOriginalElem1, posActualElem1, posOriginalElem2, posActualElem2, numCartas) => {
+    const operacion1 = moverCarta(posOriginalElem1, posActualElem2, numCartas);
+    const operacion2 = moverCarta(posOriginalElem2, posActualElem1, numCartas);
 
     return [operacion1, operacion2];
 };
@@ -44,6 +44,67 @@ const sort = (arr, fnSetPosiciones) => {
     });
 };
 
+const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const qsort = async (arr, fnSetPosiciones) => {
+    const numElems = arr.length;
+    const arrSort = arr.map((x, p) => [x, p]);
+
+    const qsort = async (inicio, fin) => {
+
+        // particion
+        const pivote = arrSort[fin - 1][0];
+        let i = inicio;
+        console.log("pivote: ", pivote);
+
+        for (let j = inicio + 1; j < fin; j++) {
+            if (arrSort[j][0] < pivote) {
+                i++;
+                const [op1, op2] = swap(arrSort[i][1], i, arrSort[j][1], j, numElems);
+                console.log("Intercambiar", arrSort[i][1], "con", arrSort[j][1]);
+
+                fnSetPosiciones((o) => {
+                    const nArr = [...o];
+                    if (nArr[arrSort[i][1]] !== op1) {
+                        nArr[arrSort[i][1]] = op1;
+                    }
+                    if (nArr[arrSort[j][1]] !== op2) {
+                        nArr[arrSort[j][1]] = op2;
+                    }
+                    return nArr;
+                });
+
+                const swapT = arrSort[i][0];
+                arrSort[i][0] = arrSort[j][0];
+                arrSort[j][0] = swapT;
+
+                await esperar(250);
+            }
+        }
+
+        const [op1, op2] = swap(arrSort[i + 1][1], i + 1, arrSort[fin - 1][1], fin - 1, numElems);
+
+        fnSetPosiciones((o) => {
+            const nArr = [...o];
+            if (nArr[arrSort[i + 1][1]] !== op1) {
+                nArr[arrSort[i + 1][1]] = op1;
+            }
+            if (nArr[arrSort[fin - 1][1]] !== op2) {
+                nArr[arrSort[fin - 1][1]] = op2;
+            }
+            return nArr;
+        });
+
+        const swapT = arrSort[i + 1][0];
+        arrSort[i + 1][0] = arrSort[fin - 1][0];
+        arrSort[fin - 1][0] = swapT;
+
+        console.log(arrSort);
+    };
+
+    await qsort(0, numElems);
+};
+
 export function Mano(props) {
 
     const [posiciones, setPosiciones] = useState(new Array(props.cartas.length).fill("none"));
@@ -54,7 +115,7 @@ export function Mano(props) {
     );
 
     useEffect(() => {
-        sort(cartas, setPosiciones);
+        qsort(cartas, setPosiciones);
     }, []);
 
     return (
