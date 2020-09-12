@@ -12,7 +12,6 @@ const estilos = StyleSheet.create({
         display: "inline-block",
         color: "#151515",
         border: "solid 2px #151515",
-        margin: "0 0.2rem",
         borderRadius: "3px",
         boxShadow: "2px 2px 5px 0 #151515",
         width: "2.5rem",
