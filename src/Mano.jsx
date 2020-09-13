@@ -32,58 +32,44 @@ const swap = (posOriginalElem1, posActualElem1, posOriginalElem2, posActualElem2
 
 const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const swapper = (fnSetPosiciones, arr, arrSort, numElems) => (i, j) => {
+    const [op1, op2] = swap(arrSort[i][1], i, arrSort[j][1], j, numElems);
+    fnSetPosiciones((o) => {
+        const nArr = [...o];
+        if (nArr[arrSort[i][1]] !== op1) {
+            nArr[arrSort[i][1]] = op1;
+        }
+        if (nArr[arrSort[j][1]] !== op2) {
+            nArr[arrSort[j][1]] = op2;
+        }
+        return nArr;
+    });
+
+    const swapT = arrSort[i];
+    arrSort[i] = arrSort[j];
+    arrSort[j] = swapT;
+};
+
 const qsort = async (arr, fnSetPosiciones) => {
     const numElems = arr.length;
     const arrSort = arr.map((x, p) => [x, p]);
     const retraso = 50;
+    const nSwap = swapper(fnSetPosiciones, arr, arrSort, numElems);
 
     const qsort = async (inicio, fin) => {
         if (inicio >= fin) return;
 
-        // particion
         const pivote = arrSort[fin][0];
-
         let i = inicio;
         for (let j = inicio; j <= fin; j++) {
             if (arrSort[j][0] < pivote) {
-                const [op1, op2] = swap(arrSort[i][1], i, arrSort[j][1], j, numElems);
-
-                fnSetPosiciones((o) => {
-                    const nArr = [...o];
-                    if (nArr[arrSort[i][1]] !== op1) {
-                        nArr[arrSort[i][1]] = op1;
-                    }
-                    if (nArr[arrSort[j][1]] !== op2) {
-                        nArr[arrSort[j][1]] = op2;
-                    }
-                    return nArr;
-                });
-
-                const swapT = arrSort[i];
-                arrSort[i] = arrSort[j];
-                arrSort[j] = swapT;
-
+                nSwap(i, j);
                 i++;
                 await esperar(retraso);
             }
         }
 
-        const [op1, op2] = swap(arrSort[i][1], i, arrSort[fin][1], fin, numElems);
-
-        fnSetPosiciones((o) => {
-            const nArr = [...o];
-            if (nArr[arrSort[i][1]] !== op1) {
-                nArr[arrSort[i][1]] = op1;
-            }
-            if (nArr[arrSort[fin][1]] !== op2) {
-                nArr[arrSort[fin][1]] = op2;
-            }
-            return nArr;
-        });
-        const swapT = arrSort[i];
-        arrSort[i] = arrSort[fin];
-        arrSort[fin] = swapT;
-
+        nSwap(i, fin);
         await esperar(retraso);
         
         await qsort(inicio, i -1);
