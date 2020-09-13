@@ -4,6 +4,8 @@ import {Mano} from "./Mano";
 import {Descartes} from "./Descartes";
 import JSSHA from "jssha/dist/sha512";
 
+const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const estilos = StyleSheet.create({
     contJuego: {
         position: "fixed",
@@ -61,15 +63,32 @@ function App() {
     // num cartas Restantes
     const [numCartas, setNumCartas] = useState(numCartasRestantes);
     const [descartes1, setDescartes1] = useState([]);
+    const [descartes2, setDescartes2] = useState([]);
+    const [descartes3, setDescartes3] = useState([]);
+    const [descartes4, setDescartes4] = useState([]);
 
     const sigCarta = () => {
-        const c = cartasRandom.splice(0, 1)[0];
-        cartasRandom.splice(0, 3);
-        setNumCartas((p) => p - 4);
+        const c = cartasRandom.shift();
+        setNumCartas(cartasRandom.length);
         return c;
     }
-    const descartarCarta = (carta) => {
-        setDescartes1((arr) => [...arr, carta])
+    const descartarCarta =  async (carta) => {
+        setDescartes1((arr) => [...arr, carta]);
+        await esperar(1000);
+
+        const e2 = cartasRandom.shift();
+        setDescartes2((arr) => [...arr, e2]);
+        setNumCartas(cartasRandom.length);
+        await esperar(1000);
+
+        const e3 = cartasRandom.shift();
+        setDescartes3((arr) => [...arr, e3]);
+        setNumCartas(cartasRandom.length);
+        await esperar(1000);
+
+        const e4 = cartasRandom.shift();
+        setDescartes4((arr) => [...arr, e4]);
+        setNumCartas(cartasRandom.length);
     };
 
     return (
@@ -91,6 +110,9 @@ function App() {
             <Descartes
                 cartasRestantes={numCartas}
                 descartes1={descartes1}
+                descartes2={descartes2}
+                descartes3={descartes3}
+                descartes4={descartes4}
             />
             <Mano cartas={cartasMano} fnSolicitar={sigCarta} fnDescartar={descartarCarta}/>
         </div>

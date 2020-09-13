@@ -175,8 +175,8 @@ export function Mano(props) {
             setCartas(res.map(x => x[0]));
             setPosiciones(new Array(props.cartas.length).fill("none"));
         }
-        fnDescartar(carta);
-        setTimeout(() => setCartaAdicional(fnSolicitarCarta()), 2000);
+        await fnDescartar(carta);
+        setTimeout(() => setCartaAdicional(fnSolicitarCarta()), 1000);
     };
 
     const cartasE = cartas.map((x, p) =>
