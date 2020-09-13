@@ -18,7 +18,7 @@ const estilos = StyleSheet.create({
         padding: "0.25rem",
         textAlign: "center",
         cursor: "pointer",
-        transition: "transform 150ms"
+        transition: "transform 50ms"
     },
     carta: {
         display: "inline-block",
@@ -100,10 +100,10 @@ export function Carta(props) {
         estilos[tipoCarta]
     );
 
+    //                   dangerouslySetInnerHTML={{__html: valorC}}>
     return (
         <span className={css(estilos.contCarta, transformacion.tra)}>
-            <span className={clasesCartaInner}
-                dangerouslySetInnerHTML={{__html: valorC}}>
+            <span className={clasesCartaInner} dangerouslySetInnerHTML={{__html: valorC}}>
             </span>
         </span>
     );
