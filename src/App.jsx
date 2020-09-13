@@ -45,11 +45,26 @@ const cartasRandom = (() => {
 
 function App() {
 
+    // Mano del jugador
     const cartasMano = cartasRandom.splice(0, 10);
+
+    // Manos de otros jugadores
+    cartasRandom.splice(0, 30);
+
     const cartasSerializadas = cartasRandom.join(",");
     const shaObj = new JSSHA("SHA-512", "TEXT", {encoding: "UTF8"});
     shaObj.update(cartasSerializadas);
     const sha512 = shaObj.getHash("HEX");
+
+    const sigCarta = () => {
+        const c = cartasRandom.splice(0, 1)[0];
+        cartasRandom.splice(0, 3);
+        console.log("Quedan", cartasRandom.length, "cartas");
+        return c;
+    }
+    const descartarCarta = (carta) => {
+        console.log("Carta descartada:", carta);
+    };
 
     return (
         <div className={css(estilos.contJuego)}>
@@ -67,7 +82,7 @@ function App() {
                 </tr>
                 </tbody>
             </table>
-            <Mano cartas={cartasMano}/>
+            <Mano cartas={cartasMano} fnSolicitar={sigCarta} fnDescartar={descartarCarta}/>
         </div>
     )
 }
