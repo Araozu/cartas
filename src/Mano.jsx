@@ -120,6 +120,22 @@ const hsort = async (arr, fnSetPosiciones) => {
 
 };
 
+const isort = async (arr, fnSetPosiciones) => {
+    const numElems = arr.length;
+    const arrSort = arr.map((x, p) => [x, p]);
+    const nSwap = swapper(fnSetPosiciones, arr, arrSort, numElems);
+
+    for (let actualiter = 1; actualiter < numElems; actualiter++) {
+        let posActual = actualiter;
+        while (posActual > 0 && arrSort[posActual - 1][0] > arrSort[posActual][0]) {
+            nSwap(posActual - 1, posActual);
+            await esperar(retraso);
+            posActual--;
+        }
+    }
+    
+};
+
 export function Mano(props) {
 
     const [posiciones, setPosiciones] = useState(new Array(props.cartas.length).fill("none"));
