@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import {Carta} from "./Carta";
 import {StyleSheet, css} from "aphrodite";
 
+const anchoCarta = 3.4; // rem
 const estilos = StyleSheet.create({
     contenedorCartas: {
         textAlign: "center",
@@ -9,15 +10,18 @@ const estilos = StyleSheet.create({
         bottom: "1rem",
         left: "0",
         width: "100%"
+    },
+    separador: {
+        display: "inline-block",
+        width: `${anchoCarta}rem`
     }
 });
 
 const moverCarta = (posOriginal, posDestino, numCartas) => {
-    const anchoCarta = 3.4; // rem
 
     if (posDestino >= 0 && posDestino < numCartas) {
         const cartasMovidas = -(posOriginal - posDestino);
-        return cartasMovidas === 0? `none`: `translateX(${anchoCarta * cartasMovidas}rem)`
+        return cartasMovidas === 0 ? `none` : `translateX(${anchoCarta * cartasMovidas}rem)`
     } else {
         throw new Error("Movimiento (de posicion) de carta invalido");
     }
@@ -71,12 +75,14 @@ const qsort = async (arr, fnSetPosiciones) => {
 
         nSwap(i, fin);
         await esperar(retraso);
-        
-        await qsort(inicio, i -1);
+
+        await qsort(inicio, i - 1);
         await qsort(i + 1, fin);
     };
 
     await qsort(0, numElems - 1);
+
+    return arrSort;
 };
 
 const hsort = async (arr, fnSetPosiciones) => {
@@ -118,6 +124,7 @@ const hsort = async (arr, fnSetPosiciones) => {
         await heapify(i, 0);
     }
 
+    return arrSort;
 };
 
 const isort = async (arr, fnSetPosiciones) => {
@@ -133,25 +140,67 @@ const isort = async (arr, fnSetPosiciones) => {
             posActual--;
         }
     }
-    
+
+    return arrSort;
 };
 
 export function Mano(props) {
 
+    const [cartas, setCartas] = useState(props.cartas);
     const [posiciones, setPosiciones] = useState(new Array(props.cartas.length).fill("none"));
+    const [cartaAdicional, setCartaAdicional] = useState(-1);
 
-    const cartas = props.cartas;//.sort((x, y) => (x < y? 0: 1));
+    const fnSolicitarCarta = props.fnSolicitar;
+    const fnDescartar = props.fnDescartar;
+
+    const descartar = async (carta) => {
+        if (carta === cartaAdicional) {
+            setCartaAdicional(-1);
+        } else {
+            const posicion = cartas.findIndex(x => x === carta);
+            // Ocultar la carta
+            const nuevasCartas = [...cartas];
+            nuevasCartas[posicion] = -1;
+            setCartas(nuevasCartas);
+            await esperar(50);
+
+            // Mover la carta entrante a su posicion
+            const nArr = [...cartas];
+            nArr.splice(nArr.findIndex(x => x === carta), 1);
+            nArr.push(cartaAdicional);
+            setCartas(nArr);
+            setPosiciones(new Array(props.cartas.length).fill("none"));
+            setCartaAdicional(-1);
+            const res = await isort(nArr, setPosiciones);
+            setCartas(res.map(x => x[0]));
+            setPosiciones(new Array(props.cartas.length).fill("none"));
+        }
+        fnDescartar(carta);
+        setTimeout(() => setCartaAdicional(fnSolicitarCarta()), 2000);
+    };
+
     const cartasE = cartas.map((x, p) =>
-        <Carta valor={x} movimiento={posiciones[p]} key={p + "-" + x}/>
+        <Carta valor={x} movimiento={posiciones[p]} key={p + "-" + x} fnDescartar={descartar}/>
     );
 
     useEffect(() => {
-        hsort(cartas, setPosiciones);
+        (async () => {
+            const arrOrdenado = await hsort(cartas, setPosiciones);
+            setCartas(arrOrdenado.map(x => x[0]));
+            setPosiciones(new Array(props.cartas.length).fill("none"));
+            await esperar(500);
+            setCartaAdicional(fnSolicitarCarta());
+        })();
     }, []);
 
     return (
         <div className={css(estilos.contenedorCartas)}>
             {cartasE}
+            <span className={css(estilos.separador)}/>
+            {cartaAdicional
+                ? <Carta valor={cartaAdicional} movimiento={'none'} fnDescartar={descartar}/>
+                : ""
+            }
         </div>
     );
 }
