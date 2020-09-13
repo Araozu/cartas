@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, css} from "aphrodite";
 import {Mano} from "./Mano";
+import {Descartes} from "./Descartes";
 import JSSHA from "jssha/dist/sha512";
 
 const estilos = StyleSheet.create({
@@ -42,28 +43,33 @@ const cartasRandom = (() => {
     }
     return cartasRandom
 })();
+const numCartasRestantes = cartasRandom.length - 40;
+
+// Mano del jugador
+const cartasMano = cartasRandom.splice(0, 10);
+
+// Manos de otros jugadores
+cartasRandom.splice(0, 30);
+
+const cartasSerializadas = cartasRandom.join(",");
+const shaObj = new JSSHA("SHA-512", "TEXT", {encoding: "UTF8"});
+shaObj.update(cartasSerializadas);
+const sha512 = shaObj.getHash("HEX");
 
 function App() {
 
-    // Mano del jugador
-    const cartasMano = cartasRandom.splice(0, 10);
-
-    // Manos de otros jugadores
-    cartasRandom.splice(0, 30);
-
-    const cartasSerializadas = cartasRandom.join(",");
-    const shaObj = new JSSHA("SHA-512", "TEXT", {encoding: "UTF8"});
-    shaObj.update(cartasSerializadas);
-    const sha512 = shaObj.getHash("HEX");
+    // num cartas Restantes
+    const [numCartas, setNumCartas] = useState(numCartasRestantes);
+    const [descartes1, setDescartes1] = useState([]);
 
     const sigCarta = () => {
         const c = cartasRandom.splice(0, 1)[0];
         cartasRandom.splice(0, 3);
-        console.log("Quedan", cartasRandom.length, "cartas");
+        setNumCartas((p) => p - 4);
         return c;
     }
     const descartarCarta = (carta) => {
-        console.log("Carta descartada:", carta);
+        setDescartes1((arr) => [...arr, carta])
     };
 
     return (
@@ -82,6 +88,10 @@ function App() {
                 </tr>
                 </tbody>
             </table>
+            <Descartes
+                cartasRestantes={numCartas}
+                descartes1={descartes1}
+            />
             <Mano cartas={cartasMano} fnSolicitar={sigCarta} fnDescartar={descartarCarta}/>
         </div>
     )
