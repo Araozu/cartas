@@ -50,10 +50,10 @@ const swapper = (fnSetPosiciones, arr, arrSort, numElems) => (i, j) => {
     arrSort[j] = swapT;
 };
 
+const retraso = 50;
 const qsort = async (arr, fnSetPosiciones) => {
     const numElems = arr.length;
     const arrSort = arr.map((x, p) => [x, p]);
-    const retraso = 50;
     const nSwap = swapper(fnSetPosiciones, arr, arrSort, numElems);
 
     const qsort = async (inicio, fin) => {
@@ -79,6 +79,47 @@ const qsort = async (arr, fnSetPosiciones) => {
     await qsort(0, numElems - 1);
 };
 
+const hsort = async (arr, fnSetPosiciones) => {
+    const numElems = arr.length;
+    const arrSort = arr.map((x, p) => [x, p]);
+    const nSwap = swapper(fnSetPosiciones, arr, arrSort, numElems);
+
+    const heapify = async (n, i) => {
+        let largest = i;
+        const l = 2 * i + 1;
+        const r = 2 * i + 2;
+
+        if (l < n && arrSort[l][0] > arrSort[largest][0]) {
+            largest = l;
+        }
+
+        if (r < n && arrSort[r][0] > arrSort[largest][0]) {
+            largest = r;
+        }
+
+        if (largest !== i) {
+            nSwap(i, largest);
+            await esperar(retraso);
+
+            await heapify(n, largest);
+        }
+    };
+
+    const n = arrSort.length;
+
+    for (let i = Math.round(n / 2 - 1); i >= 0; i--) {
+        await heapify(n, i);
+    }
+
+    for (let i = n - 1; i >= 0; i--) {
+        nSwap(0, i);
+        await esperar(retraso);
+
+        await heapify(i, 0);
+    }
+
+};
+
 export function Mano(props) {
 
     const [posiciones, setPosiciones] = useState(new Array(props.cartas.length).fill("none"));
@@ -89,7 +130,7 @@ export function Mano(props) {
     );
 
     useEffect(() => {
-        qsort(cartas, setPosiciones);
+        hsort(cartas, setPosiciones);
     }, []);
 
     return (
