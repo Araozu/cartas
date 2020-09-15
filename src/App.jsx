@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, css} from "aphrodite";
 import {Mano} from "./Mano";
 import {Descartes} from "./Descartes";
@@ -36,6 +36,9 @@ const cartasRandom = (() => {
     for (let i = 0; i < 4; i++) {
         cartas.push(192, 224, 256);
     }
+    let s = "";
+    cartas.forEach(x => s += `${x}, `);
+    console.log(s);
 
     // Hacer aleatorio
     const cartasRandom = [];
