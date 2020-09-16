@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import {StyleSheet, css} from "aphrodite";
 import {useHistory} from "react-router-dom";
+import {servidor} from "../variables";
 
-const servidor = "http://localhost:4000";
 
 const estilos = StyleSheet.create({
     codSala: {
@@ -29,11 +29,11 @@ export function ModuloCrearSala(props) {
     const reactRouterHistory = useHistory();
 
     const almacenarSalaId = (idPartida) => {
-        localStorage.setItem("id_partida_actual", idPartida);
-        localStorage.setItem("id_usuario_actual", idPartida + "_0");
+        localStorage.setItem("id_partida", idPartida);
         reactRouterHistory.push("/sala");
     };
 
+    // TODO: Enviar el id del usuario para que se agrege a la sala
     const crearSala = async (ev) => {
         ev.preventDefault();
 

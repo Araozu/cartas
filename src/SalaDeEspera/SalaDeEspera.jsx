@@ -5,8 +5,8 @@ import {useHistory, Link} from "react-router-dom";
 
 export function SalaDeEspera(props) {
 
-    const idSala = localStorage.getItem("id_partida_actual");
-    const idUsuario = localStorage.getItem("id_usuario_actual");
+    const idSala = localStorage.getItem("id_partida");
+    const idUsuario = localStorage.getItem("id_usuario");
     const [estado, setEstado] = useState("conectando");
 
     useEffect(() => {
@@ -24,8 +24,7 @@ export function SalaDeEspera(props) {
             .receive("error", (res) => {
                 setEstado(`error ${res.reason}`);
                 console.log(res);
-                localStorage.removeItem("id_partida_actual");
-                localStorage.removeItem("id_usuario_actual");
+                localStorage.removeItem("id_partida");
                 channel.leave();
             });
     }, []);
@@ -35,6 +34,14 @@ export function SalaDeEspera(props) {
             <h1>Sala de espera - Conectando</h1>
             <h2>El código de la sala es {idSala}</h2>
             <p>Conectando al servidor...</p>
+        </div>
+    );
+
+    const elemConectado = (
+        <div>
+            <h1>Sala de espera</h1>
+            <h2>El código de la sala es {idSala}</h2>
+            <p>Esperando jugadores.</p>
         </div>
     );
 
@@ -57,11 +64,16 @@ export function SalaDeEspera(props) {
     return (() => {
         if (!idSala || !idUsuario) return elemErrorSalaUndefined;
         if (estado === "conectando") return elemConectando;
+        if (estado === "conectado") return elemConectado;
         if (estado.startsWith("error")) {
             const razon = estado.substring(6);
             switch (razon) {
                 case "Sala no existe": return elemErrorSalaNoExiste;
             }
         }
+        return <div>
+            <p>Algo salió mal...</p>
+            <Link to={"/"}>Regresar al inicio.</Link>
+        </div>
     })();
 }
