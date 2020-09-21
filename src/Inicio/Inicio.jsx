@@ -1,5 +1,6 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {ModuloCrearSala} from "./ModuloCrearSala";
+import {ModuloEntrarSala} from "./ModuloEntrarSala";
 import {servidor} from "../variables";
 
 function CrearUsuario(props) {
@@ -10,13 +11,13 @@ function CrearUsuario(props) {
         ev.preventDefault();
 
         try {
-            const peticion = await fetch(`${servidor}/usuario`, {
+            const peticion = await fetch(`${servidor}/usuario/crear`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    apodo: apodo
+                    nombreUsuario: apodo
                 })
             });
             if (peticion.ok) {
@@ -52,6 +53,56 @@ export function Inicio() {
 
     const [idUsuario, setIdUsuario] = useState(localStorage.getItem("id_usuario"));
     const [apodoUsuario, setApodoUsuario] = useState(localStorage.getItem("apodo_usuario"));
+    const [datosVerificados, setDatosVerificados] = useState(false)
+
+    useEffect(() => {
+        if (idUsuario && apodoUsuario) {
+            (async () => {
+                const solicitud = await fetch(`${servidor}/usuario/validar`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        nombreUsuario: apodoUsuario,
+                        idUsuario
+                    })
+                });
+
+                if (solicitud.ok) {
+
+                    const datos = await solicitud.json();
+                    switch (datos.estado) {
+                        case "ok": {
+                            setDatosVerificados(true);
+                            break;
+                        }
+                        case "nombreUsuarioInvalido": {
+                            setApodoUsuario(datos.nombreUsuario);
+                            setDatosVerificados(true);
+                            break;
+                        }
+                        case "idInvalido": {
+                            console.log("El id provisto es invalido.");
+                            localStorage.removeItem("id_usuario");
+                            localStorage.removeItem("apodo_usuario");
+                            setIdUsuario(undefined);
+                            setApodoUsuario(undefined);
+                            setDatosVerificados(true);
+                            break;
+                        }
+                    }
+
+                } else {
+                    // TODO
+                    console.error("TODO");
+                }
+
+            })();
+        } else {
+            setDatosVerificados(true);
+        }
+    }, []);
 
     const actualizarIdApodoUsuario = (id, apodo) => {
         localStorage.setItem("id_usuario", id);
@@ -65,21 +116,23 @@ export function Inicio() {
     const elemSala = <div>
         <h2>Salas</h2>
         <p>Bienvenido, {apodoUsuario}</p>
-        <div>
-            <p>Entrar a una sala:</p>
-            <form>
-                <input type="text" placeholder={"Codigo de sala"}/>
-                <input type="submit" value={"Entrar!"}/>
-            </form>
-        </div>
+        <ModuloEntrarSala/>
         <ModuloCrearSala/>
     </div>;
+
+    const contenido = (() => {
+        if (datosVerificados) {
+            return (idUsuario && apodoUsuario)? elemSala: elemCrearUsuario;
+        } else {
+            return <p>Conectandose...</p>;
+        }
+    })();
 
     return (
         <div>
             <h1>Ri Ma Jon</h1>
             <p>Ri Ma Jon Esmeralda!</p>
-            {(idUsuario && apodoUsuario)? elemSala: elemCrearUsuario}
+            {contenido}
         </div>
     );
 }

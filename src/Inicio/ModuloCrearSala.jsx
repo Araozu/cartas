@@ -27,13 +27,13 @@ export function ModuloCrearSala(props) {
     const [estado, setEstado] = useState("inactivo");
     const [codigoSala, setCodigoSala] = useState(null);
     const reactRouterHistory = useHistory();
+    const idUsuario = localStorage.getItem("id_usuario");
 
     const almacenarSalaId = (idPartida) => {
         localStorage.setItem("id_partida", idPartida);
         reactRouterHistory.push("/sala");
     };
 
-    // TODO: Enviar el id del usuario para que se agrege a la sala
     const crearSala = async (ev) => {
         ev.preventDefault();
 
@@ -42,7 +42,11 @@ export function ModuloCrearSala(props) {
         try {
             const url = `${servidor}/partida`;
             const respuesta = await fetch(url, {
-                method: "POST"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({idUsuario})
             });
 
             if (respuesta.ok) {

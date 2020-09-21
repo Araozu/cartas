@@ -1,33 +1,59 @@
 import React, {useEffect, useState} from "react";
-import {Socket} from "phoenix/assets/js/phoenix";
 import {useHistory, Link} from "react-router-dom";
 
-
-export function SalaDeEspera(props) {
+export function SalaDeEspera() {
 
     const idSala = localStorage.getItem("id_partida");
     const idUsuario = localStorage.getItem("id_usuario");
+    const nombreUsuario = localStorage.getItem("apodo_usuario");
     const [estado, setEstado] = useState("conectando");
+    const [usuarios, setUsuarios] = useState([]);
 
     useEffect(() => {
         if (!idSala || !idUsuario) return;
 
-        const socket = new Socket("ws:/localhost:4000/socket", {params: {}});
-        socket.connect();
+        const socket = new WebSocket(`ws:/0.0.0.0:8080/socket`);
 
-        const channel = socket.channel(`sala:${idSala}`, {idUsuario});
-        channel.join()
-            .receive("ok", (res) => {
-                setEstado("conectado");
-                console.log(res);
-            })
-            .receive("error", (res) => {
-                setEstado(`error ${res.reason}`);
-                console.log(res);
-                localStorage.removeItem("id_partida");
-                channel.leave();
-            });
+        socket.addEventListener("open", (ev) => {
+            socket.send(JSON.stringify({
+                operacion: "conectar",
+                datos: JSON.stringify({
+                    idJuego: idSala,
+                    idUsuario
+                })
+            }));
+        });
+
+        socket.addEventListener("message", (ev) => {
+            const datos = JSON.parse(ev.data);
+            switch (datos.operacion) {
+                case "conexion_exitosa": {
+                    setEstado("conectado");
+                    const jugadores = datos.jugadores;
+                    jugadores.push({idUsuario, nombreUsuario})
+                    setUsuarios(jugadores);
+                    break;
+                }
+                case "usuario_conectado": {
+                    const idUsuario = datos.idUsuario;
+                    const nombreUsuario = datos.nombreUsuario;
+                    setUsuarios((u) => {
+                       const s = [...u];
+                       s.push({idUsuario, nombreUsuario})
+                       return s;
+                    });
+                    break;
+                }
+            }
+        });
+
     }, []);
+
+    const usuariosElem = usuarios.map((u) => {
+        return (
+            <p key={u.idUsuario}>Usuario: {u.nombreUsuario}</p>
+        )
+    });
 
     const elemConectando = (
         <div>
@@ -41,7 +67,10 @@ export function SalaDeEspera(props) {
         <div>
             <h1>Sala de espera</h1>
             <h2>El código de la sala es {idSala}</h2>
-            <p>Esperando jugadores.</p>
+            <div>
+                <p>Jugadores conectados:</p>
+                {usuariosElem}
+            </div>
         </div>
     );
 
