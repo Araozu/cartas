@@ -23,7 +23,6 @@ export function Juego2() {
             left: `${(pW * 100 - (pH * 100)) / 2}px`,
             width: `${pH * 100}px`,
             height: `${pH * 100}px`,
-            border: "solid 1px blue",
             perspective: `${pW * 15}px`,
         },
         cont2: {
@@ -149,23 +148,44 @@ export function Juego2() {
                     <div className={css(estilos.cont2)}>
                         <div className={css(estilos.contCuadrante2)}>
                             <div className={css(estilos.cuadrante)}>
-                                <Carta2 valor={21}/>
-                                <Carta2 valor={44}/>
-                                <Carta2 valor={44}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
                             </div>
                         </div>
                         <div className={css(estilos.contCuadrante3)}>
                             <div className={css(estilos.cuadrante)}>
-                                <Carta2 valor={128}/>
-                                <Carta2 valor={128}/>
-                                <Carta2 valor={192}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
                             </div>
                         </div>
                         <div className={css(estilos.contCuadrante4)}>
                             <div className={css(estilos.cuadrante)}>
-                                <Carta2 valor={256}/>
-                                <Carta2 valor={256}/>
-                                <Carta2 valor={256}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
+                                <Carta2 valor={0}/>
                             </div>
                         </div>
                         <div className={css(estilos.contCuadrante)}>
@@ -180,7 +200,6 @@ export function Juego2() {
                                 <Carta2 valor={8}/>
                                 <Carta2 valor={10}/>
                                 <Carta2 valor={6}/>
-                                <Carta2 valor={8}/>
                             </div>
                         </div>
                     </div>

@@ -73,6 +73,13 @@ export function Carta2(props) {
             display: "inline-block",
             bottom: "0",
             verticalAlign: "middle"
+        },
+        cartaTraseraInner: {
+            display: "inline-block",
+            width: "60%",
+            height: "80%",
+            border: `solid ${pH * 0.4 * escala}px rgba(21, 21, 21, 0.75)`,
+            borderRadius: "0.1rem",
         }
     });
 
@@ -134,10 +141,9 @@ export function Carta2(props) {
         estilos[tipoCarta]
     );
 
-
     const e = (() => {
         if (valor === 0) {
-            return <span className={clasesCartaInner}/>;
+            return <span className={css(estilos.cartaTraseraInner)} dangerouslySetInnerHTML={{__html: "&nbsp;"}}/>;
         } else if (tipo === 2 || tipo === 3 || tipo === 4 || tipo === 5) {
             let color;
             switch (tipo) {
