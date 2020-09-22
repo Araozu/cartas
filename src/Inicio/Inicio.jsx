@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import {ModuloCrearSala} from "./ModuloCrearSala";
 import {ModuloEntrarSala} from "./ModuloEntrarSala";
 import {servidor} from "../variables";
+import {Link} from "react-router-dom"
 
 function CrearUsuario(props) {
     const fnNotificar = props.fn;
@@ -133,6 +134,11 @@ export function Inicio() {
             <h1>Ri Ma Jon</h1>
             <p>Ri Ma Jon Esmeralda!</p>
             {contenido}
+            <br/>
+            <br/>
+            <p>
+                <Link to={"/ayuda"}>Ayuda</Link>
+            </p>
         </div>
     );
 }

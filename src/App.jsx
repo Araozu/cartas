@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import {Inicio} from "./Inicio/Inicio";
 import {SalaDeEspera} from "./SalaDeEspera/SalaDeEspera";
+import {Ayuda} from "./Ayuda/Ayuda";
 
 const estilosGlobales = StyleSheet.create({
     global: {
@@ -21,6 +22,9 @@ function App() {
                 <Switch>
                     <Route path={"/sala"}>
                         <SalaDeEspera/>
+                    </Route>
+                    <Route path={"/ayuda"}>
+                        <Ayuda/>
                     </Route>
                     <Route path={"/"}>
                         <Inicio/>
