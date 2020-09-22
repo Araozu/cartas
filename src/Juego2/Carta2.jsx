@@ -1,42 +1,52 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {css, StyleSheet} from "aphrodite";
-
-const pH = Math.floor(window.innerHeight / 100);
-const pW = Math.floor(window.innerWidth / 100);
 
 const colorVerde = "#2E7D32";
 const colorRojo = "#c62828";
 const colorAzul = "#1565C0";
 
 export function Carta2(props) {
-
     const valor = props.valor ?? 0;
     const movimiento = props.movimiento ?? "none";
     const fnDescartar = props.fnDescartar ?? (() => {});
     const escala = props.escala ?? 1;
 
+    const [pH, setPH] = useState(Math.floor(window.innerHeight / 100));
+    const [pW, setPW] = useState(Math.floor(window.innerWidth / 100));
+
+    const listener = () => {
+        setPH(Math.floor(window.innerHeight / 100));
+        setPW(Math.floor(window.innerWidth / 100));
+    };
+
+    useEffect(() => {
+        window.addEventListener("resize", listener);
+        return () => {
+            window.removeEventListener("resize", listener);
+        };
+    }, []);
+
     const estilos = StyleSheet.create({
         contCarta: {
             position: "relative",
-            fontSize: `${pH * 3 * escala}px`,
-            fontWeight: "bold",
+            fontSize: `${pH * 4.5 * escala}px`,
+            fontWeight: "normal",
             fontFamily: "'PT Serif', serif",
-            display: "inline-block",
+            display: "table-cell",
             color: "#151515",
             backgroundColor: "white",
             border: `solid ${pH * 0.225 * escala}px #151515`,
             borderRadius: "0.1rem",
             boxShadow: `${pH * 0.15 * escala}px ${pH * 0.15 * escala}px ${pH * 0.3 * escala}px 0 #151515`,
-            width: `${pH * 3 * escala}px`,
-            height: `${pH * 4.5 * escala}px`,
-            padding: `${pH * 0.5 * escala}px`,
+            width: `${pH * 5 * escala}px`,
+            height: `${pH * 8.5 * escala}px`,
             textAlign: "center",
+            verticalAlign: "middle",
             cursor: "pointer",
             transition: "transform 50ms, opacity 50ms"
         },
         carta: {
             display: "inline-block",
-            padding: `${pH * 0.5 * escala}`,
             borderRadius: `${pH * 0.4 * escala}`
         },
         cRojo: {
@@ -65,7 +75,6 @@ export function Carta2(props) {
             verticalAlign: "middle"
         }
     });
-
 
     const tipo = (valor << 23) >>> 28;
     const tipoCarta = (() => {
