@@ -61,7 +61,7 @@ const shaObj = new JSSHA("SHA-512", "TEXT", {encoding: "UTF8"});
 shaObj.update(cartasSerializadas);
 const sha512 = shaObj.getHash("HEX");
 
-function App() {
+export function Juego() {
 
     // num cartas Restantes
     const [numCartas, setNumCartas] = useState(numCartasRestantes);
