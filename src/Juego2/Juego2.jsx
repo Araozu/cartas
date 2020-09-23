@@ -13,6 +13,9 @@ export function Juego2() {
     const [dora, setDora] = useState(undefined);
     const [doraOculto, setDoraOculto] = useState(undefined);
     const [cartasJ, setCartasJ] = useState([]);
+    const [cartas2, setCartas2] = useState([]);
+    const [cartas3, setCartas3] = useState([]);
+    const [cartas4, setCartas4] = useState([]);
 
     const idJuego = localStorage.getItem("id_partida");
     const idUsuario = localStorage.getItem("id_usuario");
@@ -126,7 +129,9 @@ export function Juego2() {
         setEsPantallaCompleta(false);
     };
 
-    const cartasVacias = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const actMano = (cartas) => {
+        setCartasJ(cartas);
+    };
 
     return (
         <div>
@@ -134,16 +139,16 @@ export function Juego2() {
             <div className={css(estilos.contInt)}>
                 <div className={css(estilos.cont2)}>
                     <div className={css(estilos.contCuadrante2)}>
-                        <Mano cartas={cartasVacias}/>
+                        <Mano cartas={cartas2}/>
                     </div>
                     <div className={css(estilos.contCuadrante3)}>
-                        <Mano cartas={cartasVacias}/>
+                        <Mano cartas={cartas3}/>
                     </div>
                     <div className={css(estilos.contCuadrante4)}>
-                        <Mano cartas={cartasVacias}/>
+                        <Mano cartas={cartas4}/>
                     </div>
                     <div className={css(estilos.contCuadrante)}>
-                        <Mano cartas={cartasJ} entrada={undefined}/>
+                        <Mano cartas={cartasJ} entrada={undefined} fnActCartas={actMano}/>
                     </div>
                 </div>
             </div>

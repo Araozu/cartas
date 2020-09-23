@@ -113,7 +113,7 @@ export function Carta2(props) {
                 opacity: "1",
                 transform: movimiento,
                 ":hover": {
-                    transform: (movimiento === "none" ? `translateY(-1rem)` : `translateY(-1rem) ${movimiento}`)
+                    transform: (movimiento === "none" ? `translateY(${-pH * 1 * escala}px)` : `translateY(${-pH * 1 * escala}px) ${movimiento}`)
                 }
             }
             : {
