@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {useHistory, Link} from "react-router-dom";
 
+let socket;
+
 export function SalaDeEspera() {
 
     const idSala = localStorage.getItem("id_partida");
@@ -8,11 +10,12 @@ export function SalaDeEspera() {
     const nombreUsuario = localStorage.getItem("apodo_usuario");
     const [estado, setEstado] = useState("conectando");
     const [usuarios, setUsuarios] = useState([]);
+    const reactRouterHistory = useHistory();
 
     useEffect(() => {
         if (!idSala || !idUsuario) return;
 
-        const socket = new WebSocket(`ws:/0.0.0.0:8080/socket`);
+        socket = new WebSocket(`ws:/0.0.0.0:8080/socket`);
 
         socket.addEventListener("open", (ev) => {
             socket.send(JSON.stringify({
@@ -44,10 +47,25 @@ export function SalaDeEspera() {
                     });
                     break;
                 }
+                case "juego_iniciado": {
+                    reactRouterHistory.push("/juego2");
+                }
             }
         });
 
+        return () => {
+            socket.close();
+        }
     }, []);
+
+    const iniciarJuego = () => {
+        socket.send(JSON.stringify({
+            operacion: "iniciar",
+            datos: JSON.stringify({
+                idJuego: idSala
+            })
+        }));
+    };
 
     const usuariosElem = usuarios.map((u) => {
         return (
@@ -70,6 +88,9 @@ export function SalaDeEspera() {
             <div>
                 <p>Jugadores conectados:</p>
                 {usuariosElem}
+                {usuariosElem.length === 4? <div>
+                    <button onClick={iniciarJuego}>Iniciar el juego!</button>
+                </div>: <></>}
             </div>
         </div>
     );
