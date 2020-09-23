@@ -1,22 +1,14 @@
 import React, {useState} from "react";
 import {StyleSheet, css} from "aphrodite";
-import {Carta2} from "./Carta2";
 import {ContenedorDora} from "./ContenedorDora";
 import {useDimensions} from "./useDimensions";
+import {Mano} from "./Mano";
 
 export function Juego2() {
     const [pH, pW] = useDimensions();
     const [esPantallaCompleta, setEsPantallaCompleta] = useState(false);
 
     const estilos = StyleSheet.create({
-        cont: {
-            position: "fixed",
-            top: "0",
-            left: "0",
-            width: `100%`,
-            height: `100%`,
-            textAlign: "center"
-        },
         contInt: {
             position: "absolute",
             top: "0",
@@ -54,14 +46,6 @@ export function Juego2() {
             width: `100%`,
             height: `100%`,
             transform: `rotate(90deg)`
-        },
-        cuadrante: {
-            position: "absolute",
-            width: `87%`,
-            height: `10%`,
-            bottom: "0",
-            right: "0",
-            textAlign: "left"
         },
         pantallaCompleta: {
             position: "fixed",
@@ -104,68 +88,25 @@ export function Juego2() {
         setEsPantallaCompleta(false);
     };
 
+    const cartasVacias = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
     return (
         <div>
-            <ContenedorDora turnosRestantes={12}/>
-            <div className={css(estilos.cont)}>
-                <div className={css(estilos.contInt)}>
-                    <div className={css(estilos.cont2)}>
-                        <div className={css(estilos.contCuadrante2)}>
-                            <div className={css(estilos.cuadrante)}>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                            </div>
-                        </div>
-                        <div className={css(estilos.contCuadrante3)}>
-                            <div className={css(estilos.cuadrante)}>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                            </div>
-                        </div>
-                        <div className={css(estilos.contCuadrante4)}>
-                            <div className={css(estilos.cuadrante)}>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                                <Carta2 valor={0}/>
-                            </div>
-                        </div>
-                        <div className={css(estilos.contCuadrante)}>
-                            <div className={css(estilos.cuadrante)}>
-                                <Carta2 valor={6}/>
-                                <Carta2 valor={8}/>
-                                <Carta2 valor={10}/>
-                                <Carta2 valor={6}/>
-                                <Carta2 valor={8}/>
-                                <Carta2 valor={10}/>
-                                <Carta2 valor={6}/>
-                                <Carta2 valor={8}/>
-                                <Carta2 valor={10}/>
-                                <Carta2 valor={6}/>
-                            </div>
-                        </div>
+            <ContenedorDora turnosRestantes={15}/>
+            <div className={css(estilos.contInt)}>
+                <div className={css(estilos.cont2)}>
+                    <div className={css(estilos.contCuadrante2)}>
+                        <Mano cartas={cartasVacias}/>
+                    </div>
+                    <div className={css(estilos.contCuadrante3)}>
+                        <Mano cartas={cartasVacias}/>
+                    </div>
+                    <div className={css(estilos.contCuadrante4)}>
+                        <Mano cartas={cartasVacias}/>
+                    </div>
+                    <div className={css(estilos.contCuadrante)}>
+                        <Mano cartas={[20]} entrada={192}
+                              gruposAbiertos={[[192, 192, 192, 192], [168, 168, 168, 168], [8, 10, 12, 4]]}/>
                     </div>
                 </div>
             </div>
