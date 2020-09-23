@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {Carta} from "./Carta";
 import {StyleSheet, css} from "aphrodite";
-import {Socket} from "phoenix/assets/js/phoenix";
 
 const anchoCarta = 3.4; // rem
 const estilos = StyleSheet.create({
@@ -144,15 +143,6 @@ const isort = async (arr, fnSetPosiciones) => {
 
     return arrSort;
 };
-
-const socket = new Socket("ws:/localhost:4000/socket", {params: {}});
-socket.connect();
-
-const channel = socket.channel("partida:HHCEX", {});
-channel.join()
-    .receive("ok", resp => { console.log("Joined successfully", resp) })
-    .receive("error", resp => { console.log("Unable to join", resp) });
-
 
 export function Mano(props) {
 

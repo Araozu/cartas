@@ -38,7 +38,6 @@ const cartasRandom = (() => {
     }
     let s = "";
     cartas.forEach(x => s += `${x}, `);
-    console.log(s);
 
     // Hacer aleatorio
     const cartasRandom = [];

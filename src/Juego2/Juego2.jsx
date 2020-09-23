@@ -1,12 +1,21 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {StyleSheet, css} from "aphrodite";
 import {ContenedorDora} from "./ContenedorDora";
 import {useDimensions} from "./useDimensions";
 import {Mano} from "./Mano";
 
+let socket;
+
 export function Juego2() {
     const [pH, pW] = useDimensions();
     const [esPantallaCompleta, setEsPantallaCompleta] = useState(false);
+
+    const [dora, setDora] = useState(undefined);
+    const [doraOculto, setDoraOculto] = useState(undefined);
+    const [cartasJ, setCartasJ] = useState([]);
+
+    const idJuego = localStorage.getItem("id_partida");
+    const idUsuario = localStorage.getItem("id_usuario");
 
     const estilos = StyleSheet.create({
         contInt: {
@@ -58,6 +67,37 @@ export function Juego2() {
         }
     });
 
+    useEffect(() => {
+        if (!idJuego || !idUsuario) return;
+
+        socket = new WebSocket(`ws:/0.0.0.0:8080/juego`);
+
+        socket.addEventListener("open", () => {
+            socket.send(JSON.stringify({
+                operacion: "conectar",
+                datos: JSON.stringify({
+                    idJuego,
+                    idUsuario
+                })
+            }));
+        });
+
+        socket.addEventListener("message", (ev) => {
+            const datos = JSON.parse(ev.data);
+            switch (datos.operacion) {
+                case "actualizar_datos": {
+                    console.log(datos.datos);
+                    setDora(datos.datos.dora);
+                    setDoraOculto(datos.datos.doraOculto);
+                    console.log(datos.datos.manos[idUsuario].cartas);
+                    setCartasJ(datos.datos.manos[idUsuario].cartas);
+                    break;
+                }
+            }
+        });
+
+    }, []);
+
     const pantallaCompleta = () => {
         const elem = document.documentElement;
 
@@ -74,8 +114,6 @@ export function Juego2() {
     }
 
     const salirPantallaCompleta = () => {
-        const elem = document.documentElement;
-
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.mozCancelFullScreen) { /* Firefox */
@@ -92,7 +130,7 @@ export function Juego2() {
 
     return (
         <div>
-            <ContenedorDora turnosRestantes={15}/>
+            <ContenedorDora dora={dora} doraOculto={doraOculto} turnosRestantes={15}/>
             <div className={css(estilos.contInt)}>
                 <div className={css(estilos.cont2)}>
                     <div className={css(estilos.contCuadrante2)}>
@@ -105,8 +143,7 @@ export function Juego2() {
                         <Mano cartas={cartasVacias}/>
                     </div>
                     <div className={css(estilos.contCuadrante)}>
-                        <Mano cartas={[20]} entrada={192}
-                              gruposAbiertos={[[192, 192, 192, 192], [168, 168, 168, 168], [8, 10, 12, 4]]}/>
+                        <Mano cartas={cartasJ} entrada={undefined}/>
                     </div>
                 </div>
             </div>
