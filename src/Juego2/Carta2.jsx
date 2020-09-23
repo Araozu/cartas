@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {css, StyleSheet} from "aphrodite";
+import {useDimensions} from "./useDimensions";
 
 const colorVerde = "#2E7D32";
 const colorRojo = "#c62828";
@@ -11,20 +12,7 @@ export function Carta2(props) {
     const fnDescartar = props.fnDescartar ?? (() => {});
     const escala = props.escala ?? 1;
 
-    const [pH, setPH] = useState(Math.floor(window.innerHeight / 100));
-    const [pW, setPW] = useState(Math.floor(window.innerWidth / 100));
-
-    const listener = () => {
-        setPH(Math.floor(window.innerHeight / 100));
-        setPW(Math.floor(window.innerWidth / 100));
-    };
-
-    useEffect(() => {
-        window.addEventListener("resize", listener);
-        return () => {
-            window.removeEventListener("resize", listener);
-        };
-    }, []);
+    const [pH, pW] = useDimensions();
 
     const estilos = StyleSheet.create({
         contCarta: {

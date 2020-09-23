@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import {StyleSheet, css} from "aphrodite";
 import {Carta2} from "./Carta2";
-
+import {ContenedorDora} from "./ContenedorDora";
+import {useDimensions} from "./useDimensions";
 
 export function Juego2() {
-    const [pH, setPH] = useState(Math.floor(window.innerHeight / 100));
-    const [pW, setPW] = useState(Math.floor(window.innerWidth / 100));
+    const [pH, pW] = useDimensions();
     const [esPantallaCompleta, setEsPantallaCompleta] = useState(false);
 
     const estilos = StyleSheet.create({
@@ -31,15 +31,6 @@ export function Juego2() {
             transform: "rotateX(3deg)",
             width: `100%`,
             height: `100%`,
-        },
-        dora: {
-            position: "fixed",
-            top: `${pH * 2}px`,
-            left: `${pH * 2}px`,
-            padding: `${pH}px`,
-            borderRadius: `${pH / 2}px`,
-            fontSize: `${pH * 2.5}px`,
-            boxShadow: `0 0 ${pH * 0.75}px ${pH * 0.75}px #dedede`
         },
         contCuadrante: {
             position: "absolute",
@@ -68,7 +59,6 @@ export function Juego2() {
             position: "absolute",
             width: `87%`,
             height: `10%`,
-            border: "solid 1px red",
             bottom: "0",
             right: "0",
             textAlign: "left"
@@ -83,18 +73,6 @@ export function Juego2() {
             cursor: "pointer"
         }
     });
-
-    const listener = () => {
-        setPH(Math.floor(window.innerHeight / 100));
-        setPW(Math.floor(window.innerWidth / 100));
-    };
-
-    useEffect(() => {
-        window.addEventListener("resize", listener);
-        return () => {
-            window.removeEventListener("resize", listener);
-        };
-    }, []);
 
     const pantallaCompleta = () => {
         const elem = document.documentElement;
@@ -128,21 +106,7 @@ export function Juego2() {
 
     return (
         <div>
-            <div className={css(estilos.dora)}>
-                <Carta2 valor={256} escala={0.75}/>
-                <Carta2 valor={0} escala={0.75}/>
-                <Carta2 valor={0} escala={0.75}/>
-                <Carta2 valor={0} escala={0.75}/>
-                <Carta2 valor={0} escala={0.75}/>
-                <div/>
-                <Carta2 valor={0} escala={0.75}/>
-                <Carta2 valor={0} escala={0.75}/>
-                <Carta2 valor={0} escala={0.75}/>
-                <Carta2 valor={0} escala={0.75}/>
-                <Carta2 valor={0} escala={0.75}/>
-                <div/>
-                <span>Sig bonus: {3} turnos</span>
-            </div>
+            <ContenedorDora turnosRestantes={12}/>
             <div className={css(estilos.cont)}>
                 <div className={css(estilos.contInt)}>
                     <div className={css(estilos.cont2)}>
