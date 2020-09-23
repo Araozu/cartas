@@ -3,6 +3,7 @@ import {StyleSheet, css} from "aphrodite";
 import {ContenedorDora} from "./ContenedorDora";
 import {useDimensions} from "./useDimensions";
 import {Mano} from "./Mano";
+import {Carta2} from "./Carta2";
 
 let socket;
 
@@ -68,6 +69,15 @@ export function Juego2() {
             padding: `0 ${pH * 5}px`,
             boxShadow: `0 0 ${pH * 0.75}px ${pH * 0.75}px #dedede`,
             cursor: "pointer"
+        },
+        contCuadranteDescarte: {
+            position: "absolute",
+            width: `25%`,
+            height: `20%`,
+            bottom: "17%",
+            right: "37.5%",
+            textAlign: "left",
+            border: "solid 1px red"
         }
     });
 
@@ -165,15 +175,28 @@ export function Juego2() {
             <div className={css(estilos.contInt)}>
                 <div className={css(estilos.cont2)}>
                     <div className={css(estilos.contCuadrante2)}>
+                        <div className={css(estilos.contCuadranteDescarte)}>
+                        </div>
                         <Mano cartas={cartas2}/>
                     </div>
                     <div className={css(estilos.contCuadrante3)}>
+                        <div className={css(estilos.contCuadranteDescarte)}>
+                        </div>
                         <Mano cartas={cartas3}/>
                     </div>
                     <div className={css(estilos.contCuadrante4)}>
+                        <div className={css(estilos.contCuadranteDescarte)}>
+                        </div>
                         <Mano cartas={cartas4}/>
                     </div>
                     <div className={css(estilos.contCuadrante)}>
+                        <div className={css(estilos.contCuadranteDescarte)}>
+                            {[2, 2, 2, 2, 2, 2, 2].map((v, i) => <Carta2 valor={v} escala={0.75} key={i + "-" + v}/>)}
+                            <div/>
+                            {[4, 4, 4, 4, 4, 4, 4].map((v, i) => <Carta2 valor={v} escala={0.75} key={i + "-" + v}/>)}
+                            <div/>
+                            {[4, 4, 4, 4, 4, 4, 4].map((v, i) => <Carta2 valor={v} escala={0.75} key={i + "-" + v}/>)}
+                        </div>
                         <Mano cartas={cartasJ} entrada={undefined} fnActCartas={actMano}/>
                     </div>
                 </div>
