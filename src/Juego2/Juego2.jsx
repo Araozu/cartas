@@ -12,10 +12,11 @@ export function Juego2() {
 
     const [dora, setDora] = useState(undefined);
     const [doraOculto, setDoraOculto] = useState(undefined);
-    const [cartasJ, setCartasJ] = useState([]);
+    const [cartasJ, setCartas1] = useState([]);
     const [cartas2, setCartas2] = useState([]);
     const [cartas3, setCartas3] = useState([]);
     const [cartas4, setCartas4] = useState([]);
+    const [map, setMap] = useState({});
 
     const idJuego = localStorage.getItem("id_partida");
     const idUsuario = localStorage.getItem("id_usuario");
@@ -86,14 +87,39 @@ export function Juego2() {
         });
 
         socket.addEventListener("message", (ev) => {
-            const datos = JSON.parse(ev.data);
-            switch (datos.operacion) {
+            const info = JSON.parse(ev.data);
+            switch (info.operacion) {
                 case "actualizar_datos": {
-                    console.log(datos.datos);
-                    setDora(datos.datos.dora);
-                    setDoraOculto(datos.datos.doraOculto);
-                    console.log(datos.datos.manos[idUsuario].cartas);
-                    setCartasJ(datos.datos.manos[idUsuario].cartas);
+                    const d = info.datos;
+                    console.log(info.datos);
+                    setDora(info.datos.dora);
+                    setDoraOculto(info.datos.doraOculto);
+
+
+                    // Mapear IDS a posiciones
+                    const mapa = {};
+                    const turnoJugador = d.ordenJugadores.findIndex((id) => id === idUsuario);
+                    mapa[idUsuario] = "1";
+                    mapa[d.ordenJugadores[(turnoJugador + 1) % 4]] = "2";
+                    mapa[d.ordenJugadores[(turnoJugador + 2) % 4]] = "3";
+                    mapa[d.ordenJugadores[(turnoJugador + 3) % 4]] = "4";
+                    setMap(Object.freeze(mapa));
+
+                    for (const idUsuario in d.manos) {
+                        const mano = d.manos[idUsuario];
+                        const posMano = mapa[idUsuario];
+                        const cartas = mano.cartas;
+                        const fnSetCartas = (() => {
+                            switch (posMano) {
+                                case "1": return setCartas1;
+                                case "2": return setCartas2;
+                                case "3": return setCartas3;
+                                case "4": return setCartas4;
+                            }
+                        })();
+                        fnSetCartas(cartas);
+                    }
+
                     break;
                 }
             }
@@ -130,7 +156,7 @@ export function Juego2() {
     };
 
     const actMano = (cartas) => {
-        setCartasJ(cartas);
+        setCartas1(cartas);
     };
 
     return (

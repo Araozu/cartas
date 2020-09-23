@@ -31,7 +31,8 @@ export function Carta2(props) {
             textAlign: "center",
             verticalAlign: "middle",
             cursor: "pointer",
-            transition: "transform 50ms, opacity 50ms"
+            transition: "transform 50ms, opacity 50ms",
+            userSelect: "none"
         },
         carta: {
             display: "inline-block",
