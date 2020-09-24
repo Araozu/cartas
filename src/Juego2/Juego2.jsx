@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {StyleSheet, css} from "aphrodite";
 import {ContenedorDora} from "./ContenedorDora";
+import {ContenedorDescartes} from "./ContenedorDescartes";
 import {useDimensions} from "./useDimensions";
 import {Mano} from "./Mano";
-import {Carta2} from "./Carta2";
 
 let socket;
 
@@ -13,11 +13,16 @@ export function Juego2() {
 
     const [dora, setDora] = useState(undefined);
     const [doraOculto, setDoraOculto] = useState(undefined);
-    const [cartasJ, setCartas1] = useState([]);
+    const [cartas1, setCartas1] = useState([]);
     const [cartas2, setCartas2] = useState([]);
     const [cartas3, setCartas3] = useState([]);
     const [cartas4, setCartas4] = useState([]);
     const [map, setMap] = useState({});
+    const [descartes1, setDescartes1] = useState([]);
+    const [descartes2, setDescartes2] = useState([]);
+    const [descartes3, setDescartes3] = useState([]);
+    const [descartes4, setDescartes4] = useState([]);
+
 
     const idJuego = localStorage.getItem("id_partida");
     const idUsuario = localStorage.getItem("id_usuario");
@@ -127,7 +132,16 @@ export function Juego2() {
                                 case "4": return setCartas4;
                             }
                         })();
+                        const fnSetDescartes = (() => {
+                            switch (posMano) {
+                                case "1": return setDescartes1;
+                                case "2": return setDescartes2;
+                                case "3": return setDescartes3;
+                                case "4": return setDescartes4;
+                            }
+                        })();
                         fnSetCartas(cartas);
+                        fnSetDescartes(mano.descartes);
                     }
 
                     break;
@@ -175,29 +189,20 @@ export function Juego2() {
             <div className={css(estilos.contInt)}>
                 <div className={css(estilos.cont2)}>
                     <div className={css(estilos.contCuadrante2)}>
-                        <div className={css(estilos.contCuadranteDescarte)}>
-                        </div>
+                        <ContenedorDescartes cartas={descartes2}/>
                         <Mano cartas={cartas2}/>
                     </div>
                     <div className={css(estilos.contCuadrante3)}>
-                        <div className={css(estilos.contCuadranteDescarte)}>
-                        </div>
+                        <ContenedorDescartes cartas={descartes3}/>
                         <Mano cartas={cartas3}/>
                     </div>
                     <div className={css(estilos.contCuadrante4)}>
-                        <div className={css(estilos.contCuadranteDescarte)}>
-                        </div>
+                        <ContenedorDescartes cartas={descartes4}/>
                         <Mano cartas={cartas4}/>
                     </div>
                     <div className={css(estilos.contCuadrante)}>
-                        <div className={css(estilos.contCuadranteDescarte)}>
-                            {[2, 2, 2, 2, 2, 2, 2].map((v, i) => <Carta2 valor={v} escala={0.75} key={i + "-" + v}/>)}
-                            <div/>
-                            {[4, 4, 4, 4, 4, 4, 4].map((v, i) => <Carta2 valor={v} escala={0.75} key={i + "-" + v}/>)}
-                            <div/>
-                            {[4, 4, 4, 4, 4, 4, 4].map((v, i) => <Carta2 valor={v} escala={0.75} key={i + "-" + v}/>)}
-                        </div>
-                        <Mano cartas={cartasJ} entrada={undefined} fnActCartas={actMano}/>
+                        <ContenedorDescartes cartas={descartes1}/>
+                        <Mano cartas={cartas1} entrada={undefined} fnActCartas={actMano}/>
                     </div>
                 </div>
             </div>
