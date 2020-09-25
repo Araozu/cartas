@@ -1,6 +1,6 @@
 import React from "react";
 import {StyleSheet, css} from "aphrodite";
-import {Carta} from "../Juego/Carta";
+import {Carta2} from "../Juego2/Carta2";
 
 const estilos = StyleSheet.create({
     yaku: {
@@ -73,7 +73,7 @@ const triCartasR = new Array(3).fill(cartas[Math.floor(Math.random() * cartas.le
 const cuaCartasR = new Array(4).fill(cartas[Math.floor(Math.random() * cartas.length)]);
 
 const numsACartasElem = (nums) => nums.map((c, i) => (
-    <Carta valor={c} movimiento={""} fnDescartar={() => {
+    <Carta2 valor={c} movimiento={""} fnDescartar={() => {
     }} key={c + "-" + i}/>
 ));
 
@@ -90,32 +90,32 @@ const numsACartasFElem = (nums) => {
 export function Ayuda() {
 
     const elemCartas = cartas.map((c, i) => (
-        <Carta valor={c} movimiento={""} fnDescartar={() => {
+        <Carta2 valor={c} movimiento={""} fnDescartar={() => {
         }} key={c + "-" + i}/>
     ));
 
     const elemCartasR = cartasR.map((c, i) => (
-        <Carta valor={c} movimiento={""} fnDescartar={() => {
+        <Carta2 valor={c} movimiento={""} fnDescartar={() => {
         }} key={c + "-" + i}/>
     ));
 
     const elemCartasParR = parCartasR.map((c, i) => (
-        <Carta valor={c} movimiento={""} fnDescartar={() => {
+        <Carta2 valor={c} movimiento={""} fnDescartar={() => {
         }} key={c + "-" + i}/>
     ));
 
     const elemCartasSeqR = seqCartasR.map((c, i) => (
-        <Carta valor={c} movimiento={""} fnDescartar={() => {
+        <Carta2 valor={c} movimiento={""} fnDescartar={() => {
         }} key={c + "-" + i}/>
     ));
 
     const elemCartasTrR = triCartasR.map((c, i) => (
-        <Carta valor={c} movimiento={""} fnDescartar={() => {
+        <Carta2 valor={c} movimiento={""} fnDescartar={() => {
         }} key={c + "-" + i}/>
     ));
 
     const elemCartasCuaR = cuaCartasR.map((c, i) => (
-        <Carta valor={c} movimiento={""} fnDescartar={() => {
+        <Carta2 valor={c} movimiento={""} fnDescartar={() => {
         }} key={c + "-" + i}/>
     ));
 

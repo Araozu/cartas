@@ -8,7 +8,6 @@ import {
 import {Inicio} from "./Inicio/Inicio";
 import {SalaDeEspera} from "./SalaDeEspera/SalaDeEspera";
 import {Ayuda} from "./Ayuda/Ayuda";
-import {Juego} from "./Juego/Juego";
 import {Juego2} from "./Juego2/Juego2";
 
 const estilosGlobales = StyleSheet.create({
@@ -30,9 +29,6 @@ function App() {
                     </Route>
                     <Route path={"/juego2"}>
                         <Juego2/>
-                    </Route>
-                    <Route path={"/juego"}>
-                        <Juego/>
                     </Route>
                     <Route path={"/"}>
                         <Inicio/>

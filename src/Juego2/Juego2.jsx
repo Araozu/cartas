@@ -8,6 +8,15 @@ import {wsServidor} from "../variables";
 
 let socket;
 
+const manoInicial = {
+    cartas: [],
+    allIn: false,
+    cartaSig: -1,
+    cartasReveladas: [],
+    descartes: [],
+    sigCarta: -1,
+};
+
 const obtClave = (obj, valor) => {
     for (const k in obj) {
         if (obj[k] === valor) return k;
@@ -20,17 +29,14 @@ export function Juego2() {
 
     const [dora, setDora] = useState(undefined);
     const [doraOculto, setDoraOculto] = useState(undefined);
-    const [cartas1, setCartas1] = useState([]);
-    const [cartas2, setCartas2] = useState([]);
-    const [cartas3, setCartas3] = useState([]);
-    const [cartas4, setCartas4] = useState([]);
     const [map, setMap] = useState({});
-    const [descartes1, setDescartes1] = useState([]);
-    const [descartes2, setDescartes2] = useState([]);
-    const [descartes3, setDescartes3] = useState([]);
-    const [descartes4, setDescartes4] = useState([]);
     const [turnoActual, setTurnoActual] = useState(false);
     const [cartasRestantes, setCartasRestantes] = useState(58);
+
+    const [mano1, setMano1] = useState(manoInicial);
+    const [mano2, setMano2] = useState(manoInicial);
+    const [mano3, setMano3] = useState(manoInicial);
+    const [mano4, setMano4] = useState(manoInicial);
 
     const idJuego = localStorage.getItem("id_partida");
     const idUsuario = localStorage.getItem("id_usuario");
@@ -50,29 +56,6 @@ export function Juego2() {
             transform: "rotateX(3deg)",
             width: `100%`,
             height: `100%`,
-        },
-        contCuadrante: {
-            position: "absolute",
-            width: `100%`,
-            height: `100%`,
-        },
-        contCuadrante2: {
-            position: "absolute",
-            width: `100%`,
-            height: `100%`,
-            transform: `rotate(270deg)`
-        },
-        contCuadrante3: {
-            position: "absolute",
-            width: `100%`,
-            height: `100%`,
-            transform: "rotate(180deg)"
-        },
-        contCuadrante4: {
-            position: "absolute",
-            width: `100%`,
-            height: `100%`,
-            transform: `rotate(90deg)`
         },
         pantallaCompleta: {
             position: "fixed",
@@ -131,25 +114,18 @@ export function Juego2() {
                     for (const idUsuario in d.manos) {
                         const mano = d.manos[idUsuario];
                         const posMano = mapa[idUsuario];
+
                         const cartas = mano.cartas;
-                        const fnSetCartas = (() => {
+
+                        const fnSetMano = (() => {
                             switch (posMano) {
-                                case "1": return setCartas1;
-                                case "2": return setCartas2;
-                                case "3": return setCartas3;
-                                case "4": return setCartas4;
+                                case "1": return setMano1;
+                                case "2": return setMano2;
+                                case "3": return setMano3;
+                                case "4": return setMano4;
                             }
                         })();
-                        const fnSetDescartes = (() => {
-                            switch (posMano) {
-                                case "1": return setDescartes1;
-                                case "2": return setDescartes2;
-                                case "3": return setDescartes3;
-                                case "4": return setDescartes4;
-                            }
-                        })();
-                        fnSetCartas(cartas);
-                        fnSetDescartes(mano.descartes);
+                        fnSetMano(mano);
                     }
 
                     setCartasRestantes(d.cartasRestantes);
@@ -190,10 +166,6 @@ export function Juego2() {
         setEsPantallaCompleta(false);
     };
 
-    const actMano = (cartas) => {
-        setCartas1(cartas);
-    };
-
     const descartarCarta = (valorCarta) => {
         console.log(valorCarta);
         if (!!turnoActual) {
@@ -211,30 +183,11 @@ export function Juego2() {
                         <br/>
                         <span style={{fontSize: `${pH * 2.5}px`}}>Cartas restantes</span>
                     </div>
-                    <div className={css(estilos.contCuadrante2)}>
-                        <ContenedorDescartes
-                            cartas={descartes2}
-                            esTurnoActual={turnoActual === obtClave(map, "2")}/>
-                        <Mano cartas={cartas2}/>
-                    </div>
-                    <div className={css(estilos.contCuadrante3)}>
-                        <ContenedorDescartes
-                            cartas={descartes3}
-                            esTurnoActual={turnoActual === obtClave(map, "3")}/>
-                        <Mano cartas={cartas3}/>
-                    </div>
-                    <div className={css(estilos.contCuadrante4)}>
-                        <ContenedorDescartes
-                            cartas={descartes4}
-                            esTurnoActual={turnoActual === obtClave(map, "4")}/>
-                        <Mano cartas={cartas4}/>
-                    </div>
-                    <div className={css(estilos.contCuadrante)}>
-                        <ContenedorDescartes
-                            cartas={descartes1}
-                            esTurnoActual={turnoActual === obtClave(map, "1")}/>
-                        <Mano cartas={cartas1} entrada={undefined} fnActCartas={actMano} fnDescartarCarta={descartarCarta}/>
-                    </div>
+                    <Mano mano={mano2} posicion={2} esTurnoActual={turnoActual === obtClave(map, "2")}/>
+                    <Mano mano={mano3} posicion={3} esTurnoActual={turnoActual === obtClave(map, "3")}/>
+                    <Mano mano={mano4} posicion={4} esTurnoActual={turnoActual === obtClave(map, "4")}/>
+                    <Mano mano={mano1} posicion={1} esTurnoActual={turnoActual === obtClave(map, "1")}
+                          fnDescartarCarta={descartarCarta}/>
                 </div>
             </div>
             <div className={css(estilos.pantallaCompleta)}

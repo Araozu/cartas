@@ -2,17 +2,7 @@ import React, {useEffect, useState} from "react";
 import {StyleSheet, css} from "aphrodite";
 import {Carta2} from "./Carta2";
 import {useDimensions} from "./useDimensions";
-
-const estilos = StyleSheet.create({
-    cuadrante: {
-        position: "absolute",
-        width: `87%`,
-        height: `10%`,
-        bottom: "0",
-        right: "0",
-        textAlign: "left"
-    }
-});
+import {ContenedorDescartes} from "./ContenedorDescartes";
 
 const estaOrdenado = (nums) => {
     for (let i = 0, j = 1; j < nums.length ; i++, j++) {
@@ -80,22 +70,48 @@ export function Mano(props) {
         return arrSort;
     };
 
-    const cartas = props.cartas;
-    const entrada = props.entrada ?? -1;
-    const gruposAbiertos = props.gruposAbiertos ?? [];
-    const fnActCartas = props.fnActCartas ?? (() => {});
+    const mano = props.mano;
+    const posicion = props.posicion;
+    const esTurnoActual = props.esTurnoActual;
+
+    const estilos = StyleSheet.create({
+        contCuadrante2: {
+            position: "absolute",
+            width: `100%`,
+            height: `100%`,
+            transform: `rotate(${90 * (5 - posicion)}deg)`
+        },
+        cuadrante: {
+            position: "absolute",
+            width: `87%`,
+            height: `10%`,
+            bottom: "0",
+            right: "0",
+            textAlign: "left"
+        }
+    });
+
+    const [cartas, setCartas] = useState(mano.cartas);
+    const entrada = mano.sigCarta;
+    const gruposAbiertos = mano.cartasReveladas;
+    const descartes = mano.descartes;
+
     const descartarCarta = props.fnDescartarCarta ?? (() => {});
 
-    const [posiciones, setPosiciones] = useState(new Array(props.cartas.length).fill("none"));
+    const [posiciones, setPosiciones] = useState(new Array(cartas.length).fill("none"));
+
+    useEffect(() => {
+        setCartas(mano.cartas);
+    }, [mano.cartas]);
 
     useEffect(() => {
         (async () => {
-            if (estaOrdenado(props.cartas)) return;
+            if (estaOrdenado(cartas)) return;
             const arrOrdenado = await isort(cartas, setPosiciones);
-            fnActCartas(arrOrdenado.map(x => x[0]));
-            setPosiciones(new Array(props.cartas.length).fill("none"));
+            setCartas(arrOrdenado.map(x => x[0]));
+            setPosiciones(new Array(cartas.length).fill("none"));
         })();
-    }, [props.cartas]);
+    }, [cartas]);
 
     const cartasElem = cartas.map((v, i) => <Carta2 valor={v}
                                                     movimiento={posiciones[i]}
@@ -115,10 +131,15 @@ export function Mano(props) {
     );
 
     return (
-        <div className={css(estilos.cuadrante)}>
-            {cartasElem}
-            {entradaElem}
-            {gruposAbiertosElem}
+        <div className={css(estilos.contCuadrante2)}>
+            <ContenedorDescartes
+                cartas={descartes}
+                esTurnoActual={esTurnoActual}/>
+            <div className={css(estilos.cuadrante)}>
+                {cartasElem}
+                {entradaElem}
+                {gruposAbiertosElem}
+            </div>
         </div>
     );
 }

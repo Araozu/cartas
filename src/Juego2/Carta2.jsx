@@ -12,7 +12,7 @@ export function Carta2(props) {
     const fnDescartar = props.fnDescartar ?? (() => {});
     const escala = props.escala ?? 1;
 
-    const [pH, pW] = useDimensions();
+    const [pH] = useDimensions();
 
     const estilos = StyleSheet.create({
         contCarta: {
