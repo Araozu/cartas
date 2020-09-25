@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {ModuloCrearSala} from "./ModuloCrearSala";
 import {ModuloEntrarSala} from "./ModuloEntrarSala";
-import {servidor} from "../variables";
+import {servidorF} from "../variables";
 import {Link} from "react-router-dom"
 
 function CrearUsuario(props) {
@@ -12,7 +12,7 @@ function CrearUsuario(props) {
         ev.preventDefault();
 
         try {
-            const peticion = await fetch(`${servidor}/usuario/crear`, {
+            const peticion = await fetch(`${servidorF}/usuario/crear`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -59,7 +59,7 @@ export function Inicio() {
     useEffect(() => {
         if (idUsuario && apodoUsuario) {
             (async () => {
-                const solicitud = await fetch(`${servidor}/usuario/validar`, {
+                const solicitud = await fetch(`${servidorF}/usuario/validar`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

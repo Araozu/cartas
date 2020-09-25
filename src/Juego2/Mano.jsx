@@ -84,6 +84,7 @@ export function Mano(props) {
     const entrada = props.entrada ?? -1;
     const gruposAbiertos = props.gruposAbiertos ?? [];
     const fnActCartas = props.fnActCartas ?? (() => {});
+    const descartarCarta = props.fnDescartarCarta ?? (() => {});
 
     const [posiciones, setPosiciones] = useState(new Array(props.cartas.length).fill("none"));
 
@@ -96,7 +97,10 @@ export function Mano(props) {
         })();
     }, [props.cartas]);
 
-    const cartasElem = cartas.map((v, i) => <Carta2 valor={v} movimiento={posiciones[i]} key={i + "-" + v}/>);
+    const cartasElem = cartas.map((v, i) => <Carta2 valor={v}
+                                                    movimiento={posiciones[i]}
+                                                    fnDescartar={descartarCarta}
+                                                    key={i + "-" + v}/>);
 
     const entradaElem = [
         <Carta2 valor={-1} key={1 + "-" + -1}/>,

@@ -1,17 +1,7 @@
 import React from "react";
 import {StyleSheet, css} from "aphrodite";
 import {Carta2} from "./Carta2";
-
-const estilos = StyleSheet.create({
-    contCuadranteDescarte: {
-        position: "absolute",
-        width: `25%`,
-        height: `20%`,
-        bottom: "17%",
-        right: "37.5%",
-        textAlign: "left",
-    }
-});
+import {useDimensions} from "./useDimensions";
 
 const splitArray = (arr, numElems) => {
     const res = [];
@@ -30,8 +20,25 @@ const splitArray = (arr, numElems) => {
 
 export function ContenedorDescartes(props) {
 
+    const [pH] = useDimensions()
     const cartas = props.cartas ?? [];
     const escala = props.escala ?? 0.75;
+    const esTurnoActual = props.esTurnoActual;
+
+    const estilos = StyleSheet.create({
+        contCuadranteDescarte: {
+            position: "absolute",
+            width: `25%`,
+            height: `20%`,
+            bottom: "17%",
+            right: "37.5%",
+            textAlign: "left",
+            borderRadius: `${pH * 1.5 * escala}px`,
+            borderTopStyle: "solid",
+            borderTopWidth: `${pH * 1.25 * escala}px`,
+            borderTopColor: esTurnoActual? "red": "#4CAF50"
+        }
+    });
 
     const gruposCartas = splitArray(cartas, 6);
 
@@ -41,8 +48,6 @@ export function ContenedorDescartes(props) {
             ? elems
             : [...elems, <div key={i + "-div"}/>];
     });
-
-    console.log(elems);
 
     return (
         <div className={css(estilos.contCuadranteDescarte)}>

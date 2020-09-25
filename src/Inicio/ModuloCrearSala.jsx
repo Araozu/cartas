@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {StyleSheet, css} from "aphrodite";
 import {useHistory} from "react-router-dom";
-import {servidor} from "../variables";
+import {servidorF} from "../variables";
 
 
 const estilos = StyleSheet.create({
@@ -40,7 +40,7 @@ export function ModuloCrearSala(props) {
         setEstado("creando");
 
         try {
-            const url = `${servidor}/partida`;
+            const url = `${servidorF}/partida`;
             const respuesta = await fetch(url, {
                 method: "POST",
                 headers: {

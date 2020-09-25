@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {servidor} from "../variables";
+import {servidorF} from "../variables";
 import {useHistory} from "react-router-dom"
 
 export function ModuloEntrarSala() {
@@ -16,7 +16,7 @@ export function ModuloEntrarSala() {
 
     const ingresar = async (ev) => {
         ev.preventDefault();
-        const request = await fetch(`${servidor}/partida-join`, {
+        const request = await fetch(`${servidorF}/partida-join`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

@@ -158,8 +158,12 @@ export function Carta2(props) {
         }
     })();
 
+    const fn = () => {
+        fnDescartar(valor);
+    };
+
     return (
-        <span className={css(estilos.contCarta, transformacion.tra)} onClick={() => fnDescartar(valor)}>
+        <span className={css(estilos.contCarta, transformacion.tra)} onClick={fn}>
             {e}
         </span>
     );

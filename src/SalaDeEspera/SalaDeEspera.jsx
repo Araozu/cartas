@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useHistory, Link} from "react-router-dom";
+import {wsServidor} from "../variables";
 
 let socket;
 
@@ -15,7 +16,7 @@ export function SalaDeEspera() {
     useEffect(() => {
         if (!idSala || !idUsuario) return;
 
-        socket = new WebSocket(`ws:/0.0.0.0:8080/socket`);
+        socket = new WebSocket(`${wsServidor}/socket`);
 
         socket.addEventListener("open", (ev) => {
             socket.send(JSON.stringify({

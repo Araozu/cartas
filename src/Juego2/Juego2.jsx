@@ -4,8 +4,15 @@ import {ContenedorDora} from "./ContenedorDora";
 import {ContenedorDescartes} from "./ContenedorDescartes";
 import {useDimensions} from "./useDimensions";
 import {Mano} from "./Mano";
+import {wsServidor} from "../variables";
 
 let socket;
+
+const obtClave = (obj, valor) => {
+    for (const k in obj) {
+        if (obj[k] === valor) return k;
+    }
+}
 
 export function Juego2() {
     const [pH, pW] = useDimensions();
@@ -22,7 +29,8 @@ export function Juego2() {
     const [descartes2, setDescartes2] = useState([]);
     const [descartes3, setDescartes3] = useState([]);
     const [descartes4, setDescartes4] = useState([]);
-
+    const [turnoActual, setTurnoActual] = useState(false);
+    const [cartasRestantes, setCartasRestantes] = useState(58);
 
     const idJuego = localStorage.getItem("id_partida");
     const idUsuario = localStorage.getItem("id_usuario");
@@ -75,21 +83,21 @@ export function Juego2() {
             boxShadow: `0 0 ${pH * 0.75}px ${pH * 0.75}px #dedede`,
             cursor: "pointer"
         },
-        contCuadranteDescarte: {
+        contCuadranteCartas: {
             position: "absolute",
-            width: `25%`,
-            height: `20%`,
-            bottom: "17%",
-            right: "37.5%",
-            textAlign: "left",
-            border: "solid 1px red"
+            display: "inline-block",
+            width: `18%`,
+            height: `18%`,
+            bottom: "41%",
+            right: "41%",
+            textAlign: "center"
         }
     });
 
     useEffect(() => {
         if (!idJuego || !idUsuario) return;
 
-        socket = new WebSocket(`ws:/0.0.0.0:8080/juego`);
+        socket = new WebSocket(`${wsServidor}/juego`);
 
         socket.addEventListener("open", () => {
             socket.send(JSON.stringify({
@@ -144,6 +152,9 @@ export function Juego2() {
                         fnSetDescartes(mano.descartes);
                     }
 
+                    setCartasRestantes(d.cartasRestantes);
+                    setTurnoActual(d.turnoActual);
+
                     break;
                 }
             }
@@ -183,26 +194,46 @@ export function Juego2() {
         setCartas1(cartas);
     };
 
+    const descartarCarta = (valorCarta) => {
+        console.log(valorCarta);
+        if (!!turnoActual) {
+            console.log("A lugar :D");
+        }
+    };
+
     return (
         <div>
             <ContenedorDora dora={dora} doraOculto={doraOculto} turnosRestantes={15}/>
             <div className={css(estilos.contInt)}>
                 <div className={css(estilos.cont2)}>
+                    <div className={css(estilos.contCuadranteCartas)}>
+                        <span style={{fontSize: `${pH * 10}px`}}>{cartasRestantes}</span>
+                        <br/>
+                        <span style={{fontSize: `${pH * 2.5}px`}}>Cartas restantes</span>
+                    </div>
                     <div className={css(estilos.contCuadrante2)}>
-                        <ContenedorDescartes cartas={descartes2}/>
+                        <ContenedorDescartes
+                            cartas={descartes2}
+                            esTurnoActual={turnoActual === obtClave(map, "2")}/>
                         <Mano cartas={cartas2}/>
                     </div>
                     <div className={css(estilos.contCuadrante3)}>
-                        <ContenedorDescartes cartas={descartes3}/>
+                        <ContenedorDescartes
+                            cartas={descartes3}
+                            esTurnoActual={turnoActual === obtClave(map, "3")}/>
                         <Mano cartas={cartas3}/>
                     </div>
                     <div className={css(estilos.contCuadrante4)}>
-                        <ContenedorDescartes cartas={descartes4}/>
+                        <ContenedorDescartes
+                            cartas={descartes4}
+                            esTurnoActual={turnoActual === obtClave(map, "4")}/>
                         <Mano cartas={cartas4}/>
                     </div>
                     <div className={css(estilos.contCuadrante)}>
-                        <ContenedorDescartes cartas={descartes1}/>
-                        <Mano cartas={cartas1} entrada={undefined} fnActCartas={actMano}/>
+                        <ContenedorDescartes
+                            cartas={descartes1}
+                            esTurnoActual={turnoActual === obtClave(map, "1")}/>
+                        <Mano cartas={cartas1} entrada={undefined} fnActCartas={actMano} fnDescartarCarta={descartarCarta}/>
                     </div>
                 </div>
             </div>
