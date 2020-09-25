@@ -28,6 +28,7 @@ export function Carta2(props) {
             boxShadow: `${pH * 0.15 * escala}px ${pH * 0.15 * escala}px ${pH * 0.3 * escala}px 0 #151515`,
             width: `${pH * 5 * escala}px`,
             height: `${pH * 8.5 * escala}px`,
+            minWidth: `${pH * 5 * escala}px`,
             textAlign: "center",
             verticalAlign: "middle",
             cursor: "pointer",

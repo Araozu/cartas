@@ -120,7 +120,7 @@ export function Mano(props) {
 
     const entradaElem = [
         <Carta2 valor={-1} key={1 + "-" + -1}/>,
-        <Carta2 valor={entrada} key={2 + "-" + entrada}/>,
+        <Carta2 valor={entrada} fnDescartar={descartarCarta} key={2 + "-" + entrada}/>,
         <Carta2 valor={-1} key={3 + "-" + -1}/>
     ];
 

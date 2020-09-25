@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {StyleSheet, css} from "aphrodite";
 import {ContenedorDora} from "./ContenedorDora";
-import {ContenedorDescartes} from "./ContenedorDescartes";
 import {useDimensions} from "./useDimensions";
 import {Mano} from "./Mano";
 import {wsServidor} from "../variables";
 
 let socket;
+const map = {};
 
 const manoInicial = {
     cartas: [],
@@ -29,9 +29,10 @@ export function Juego2() {
 
     const [dora, setDora] = useState(undefined);
     const [doraOculto, setDoraOculto] = useState(undefined);
-    const [map, setMap] = useState({});
     const [turnoActual, setTurnoActual] = useState(false);
     const [cartasRestantes, setCartasRestantes] = useState(58);
+    const [cartaDescartada, setCartaDescartada] = useState(false);
+    const [turnosDora, setTurnosDora] = useState(15);
 
     const [mano1, setMano1] = useState(manoInicial);
     const [mano2, setMano2] = useState(manoInicial);
@@ -100,22 +101,48 @@ export function Juego2() {
                     console.log(info.datos);
                     setDora(info.datos.dora);
                     setDoraOculto(info.datos.doraOculto);
-
+                    setTurnosDora(info.datos.turnosHastaDora);
 
                     // Mapear IDS a posiciones
-                    const mapa = {};
                     const turnoJugador = d.ordenJugadores.findIndex((id) => id === idUsuario);
-                    mapa[idUsuario] = "1";
-                    mapa[d.ordenJugadores[(turnoJugador + 1) % 4]] = "2";
-                    mapa[d.ordenJugadores[(turnoJugador + 2) % 4]] = "3";
-                    mapa[d.ordenJugadores[(turnoJugador + 3) % 4]] = "4";
-                    setMap(Object.freeze(mapa));
+                    map[idUsuario] = "1";
+                    map[d.ordenJugadores[(turnoJugador + 1) % 4]] = "2";
+                    map[d.ordenJugadores[(turnoJugador + 2) % 4]] = "3";
+                    map[d.ordenJugadores[(turnoJugador + 3) % 4]] = "4";
 
                     for (const idUsuario in d.manos) {
                         const mano = d.manos[idUsuario];
-                        const posMano = mapa[idUsuario];
+                        const posMano = map[idUsuario];
 
-                        const cartas = mano.cartas;
+                        const fnSetMano = (() => {
+                            switch (posMano) {
+                                case "1": return setMano1;
+                                case "2": return setMano2;
+                                case "3": return setMano3;
+                                case "4": return setMano4;
+                            }
+                        })();
+                        fnSetMano(mano);
+                    }
+
+                    setCartasRestantes(d.cartasRestantes);
+                    setTurnoActual(d.turnoActual);
+
+                    break;
+                }
+                case "actualizar_manos": {
+                    const d = info.datos;
+                    console.log(info.datos);
+                    setDora(info.datos.dora);
+                    setDoraOculto(info.datos.doraOculto);
+                    setCartaDescartada(false);
+                    setTurnosDora(info.datos.turnosHastaDora);
+
+                    for (const idUsuario in d.manos) {
+                        const mano = d.manos[idUsuario];
+                        const posMano = map[idUsuario];
+                        console.log("idUsuario", idUsuario);
+                        console.log("pos mano", posMano);
 
                         const fnSetMano = (() => {
                             switch (posMano) {
@@ -167,15 +194,22 @@ export function Juego2() {
     };
 
     const descartarCarta = (valorCarta) => {
-        console.log(valorCarta);
-        if (!!turnoActual) {
-            console.log("A lugar :D");
+        if (turnoActual === obtClave(map, "1") && !cartaDescartada) {
+            setCartaDescartada(true);
+            socket.send(JSON.stringify({
+                operacion: "descarte",
+                datos: JSON.stringify({
+                    idJuego,
+                    idUsuario,
+                    carta: valorCarta
+                })
+            }));
         }
     };
 
     return (
         <div>
-            <ContenedorDora dora={dora} doraOculto={doraOculto} turnosRestantes={15}/>
+            <ContenedorDora dora={dora} doraOculto={doraOculto} turnosRestantes={turnosDora}/>
             <div className={css(estilos.contInt)}>
                 <div className={css(estilos.cont2)}>
                     <div className={css(estilos.contCuadranteCartas)}>
